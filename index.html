@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Professor Virtual</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+
+<body>
+
+<!-- AUTENTICAÇÃO -->
+<div id="authScreen" class="screen active">
+    <div class="auth-container">
+        <div class="logo">PV</div>
+        <div id="loginForm">
+            <div class="auth-title">Professor Virtual</div>
+            <div class="auth-subtitle">Entre para acessar seus conteúdos</div>
+            <div id="loginError" class="error-message"></div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="loginPassword" placeholder="Sua senha">
+            </div>
+            <button id="loginButton" class="primary-button" onclick="login()">Entrar</button>
+            <div class="auth-switch">
+                Ainda não possui uma conta?
+                <button onclick="showRegister()">Criar conta</button>
+            </div>
+        </div>
+
+        <div id="registerForm" style="display:none">
+            <div class="auth-title">Criar conta</div>
+            <div class="auth-subtitle">Cadastre-se para solicitar acesso</div>
+            <div id="registerError" class="error-message"></div>
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="registerName" placeholder="Seu nome">
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="registerEmail" placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="registerPassword" placeholder="Crie uma senha">
+            </div>
+            <button id="registerButton" class="primary-button" onclick="register()">Criar conta</button>
+            <div class="auth-switch">
+                Já possui uma conta?
+                <button onclick="showLogin()">Fazer login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TELA DE ESPERA -->
+<div id="waitScreen" class="screen">
+    <div class="auth-container" style="text-align: center;">
+        <div class="logo">⏳</div>
+        <div class="auth-title">Conta em Análise</div>
+        <div class="auth-subtitle" style="margin-bottom: 20px;">
+            Seu cadastro foi realizado com sucesso!<br><br>
+            O administrador precisa aprovar o seu acesso.
+        </div>
+        <div id="waitError" class="error-message"></div>
+        <button id="checkButton" class="primary-button" onclick="checkApproval()">Já fui aprovado, entrar</button>
+        <div class="auth-switch" style="margin-top: 20px;">
+            <button onclick="showLogin()">Voltar ao login</button>
+        </div>
+    </div>
+</div>
+
+<!-- CHAT COM ABAS -->
+<div id="chatScreen" class="screen">
+    <div class="app-layout">
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- SIDEBAR DE NAVEGAÇÃO -->
+        <div class="sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <span>MENU</span>
+                <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+            </div>
+            <div class="sidebar-nav" id="chatTabs">
+                <button class="tab-btn" id="btn-tab-psicanalise" onclick="switchTab('psicanalise')">🧠 Psicanálise</button>
+                <button class="tab-btn" id="btn-tab-biblia" onclick="switchTab('biblia')">📖 Bíblia</button>
+                <button class="tab-btn" id="btn-tab-florais" onclick="switchTab('florais')">🌸 Curso de Florais</button>
+                <button class="tab-btn" id="btn-tab-livroExtra" onclick="switchTab('livroExtra')">📘 Livro Extra</button>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <!-- CABEÇALHO FIXO -->
+            <div class="chat-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+                    <!-- COM A IMAGEM RESTAURADA -->
+                    <div class="profile">
+                        <img src="icons/icon-192.png" alt="Professor Virtual" class="profile-pic">
+                        <div class="profile-info">
+                            <div class="profile-name">Professor Virtual</div>
+                            <div class="profile-status">Plataforma de Estudos</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="logged-user-profile">
+                        <div id="userAvatar" class="avatar">PV</div>
+                        <span id="chatUserName" class="logged-user-name">Usuário</span>
+                    </div>
+                    <button class="logout-button" onclick="logout()">Sair</button>
+                </div>
+            </div>
+
+            <!-- VIEWS DE CADA CHAT -->
+            <div class="chat-views-container">
+
+                <div id="view-psicanalise" class="chat-view active">
+                    <div class="messages" id="messages-psicanalise"></div>
+                    <div class="input-area">
+                        <textarea id="input-psicanalise" class="question-input" placeholder="Mensagem..." onkeydown="handleKey(event, 'psicanalise')"></textarea>
+                        <button class="send-button" onclick="sendQuestion('psicanalise')">➤</button>
+                    </div>
+                </div>
+
+                <div id="view-biblia" class="chat-view">
+                    <div class="messages" id="messages-biblia"></div>
+                    <div class="input-area">
+                        <textarea id="input-biblia" class="question-input" placeholder="Mensagem..." onkeydown="handleKey(event, 'biblia')"></textarea>
+                        <button class="send-button" onclick="sendQuestion('biblia')">➤</button>
+                    </div>
+                </div>
+
+                <div id="view-florais" class="chat-view">
+                    <div class="messages" id="messages-florais"></div>
+                    <div class="input-area">
+                        <textarea id="input-florais" class="question-input" placeholder="Mensagem..." onkeydown="handleKey(event, 'florais')"></textarea>
+                        <button class="send-button" onclick="sendQuestion('florais')">➤</button>
+                    </div>
+                </div>
+
+                <div id="view-livroExtra" class="chat-view">
+                    <div class="messages" id="messages-livroExtra"></div>
+                    <div class="input-area">
+                        <textarea id="input-livroExtra" class="question-input" placeholder="Mensagem..." onkeydown="handleKey(event, 'livroExtra')"></textarea>
+                        <button class="send-button" onclick="sendQuestion('livroExtra')">➤</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+
+</html>
